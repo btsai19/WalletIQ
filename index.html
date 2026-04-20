@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>WalletIQ</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Syne:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -468,6 +470,8 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15)}
 .logo-sub{font-size:7.5px;font-weight:700;font-family:'Syne',sans-serif;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.25);line-height:1;margin-top:1px}
 
 /* ═══ MOBILE TOPBAR LOGO ═══ */
+.topbar-logo-mark{display:flex;align-items:center;gap:10px;margin-right:4px;flex-shrink:0}
+.tlm-icon{width:28px;height:28px;flex-shrink:0}
 .topbar-logo-mobile{display:none;align-items:baseline;gap:0;margin-right:10px}
 .tlm-wallet{font-family:'Playfair Display',serif;font-size:15px;font-weight:600;color:var(--navy)}
 .tlm-iq{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--gold)}
@@ -694,6 +698,24 @@ html::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
 <div class="main">
 <div class="topbar">
   <div class="topbar-left">
+    <div class="topbar-logo-mark">
+      <svg class="tlm-icon" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="tlm-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#132033"/>
+            <stop offset="100%" stop-color="#0b1724"/>
+          </linearGradient>
+          <linearGradient id="tlm-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#e0b95c"/>
+            <stop offset="100%" stop-color="#c9a84c"/>
+          </linearGradient>
+        </defs>
+        <rect width="64" height="64" rx="14" fill="url(#tlm-bg)"/>
+        <rect width="64" height="64" rx="14" fill="none" stroke="#c9a84c" stroke-width="1.5" opacity="0.35"/>
+        <path d="M14 18 L24 46 L32 28 L40 46 L50 18" fill="none" stroke="url(#tlm-gold)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        <line x1="10" y1="54" x2="54" y2="54" stroke="#c9a84c" stroke-width="2" stroke-linecap="round" opacity="0.45"/>
+      </svg>
+    </div>
     <div class="topbar-logo-mobile">
       <span class="tlm-wallet">Wallet</span><span class="tlm-iq">IQ</span>
     </div>
