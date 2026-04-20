@@ -988,7 +988,7 @@ html::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
                 Upload image
                 <input type="file" id="ce-logo-input" accept="image/*" style="display:none" onchange="handleLogoUpload(this)">
               </label>
-              <button type="button" id="ce-logo-clear" onclick="clearLogo()" style="display:none;background:none;border:none;color:var(--text4);cursor:pointer;font-size:11px;font-family:'Syne',sans-serif;font-weight:600;padding:2px 0;border-radius:4px;transition:color .15s;display:block" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text4)'">↺ Remove</button>
+              <button type="button" id="ce-logo-clear" onclick="clearLogo()" style="display:none;background:none;border:none;color:var(--text4);cursor:pointer;font-size:11px;font-family:'Syne',sans-serif;font-weight:600;padding:2px 0;border-radius:4px;transition:color .15s" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text4)'">↺ Remove</button>
             </div>
           </div>
         </div>
@@ -1610,7 +1610,10 @@ function openAddCard(){
 function openEditCard(id){
   const c=S.cards.find(c=>c.id===id);if(!c)return;
   editCardId=id;pendCard=JSON.parse(JSON.stringify(c));
-  wizStep=0;resetWiz();
+  wizStep=0;
+  setEditMode(false);
+  resetWiz();
+  const logoInp=document.getElementById('ce-logo-input');if(logoInp)logoInp.value='';
   document.getElementById('cm-title').textContent='Edit Card';
   setEditMode(true);
   populateEditor();_cardDirty=false;openModal('card-modal');
