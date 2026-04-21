@@ -314,13 +314,13 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15)}
 
 /* Rate/credit rows */
 .rate-row{margin-bottom:10px}
-.rr-card{background:var(--white);border:1.5px solid var(--cream2);border-radius:var(--r);overflow:hidden;transition:border-color .15s}
+.rr-card{background:var(--white);border:1.5px solid var(--cream2);border-radius:var(--r);overflow:visible;transition:border-color .15s}
 .rr-card:hover{border-color:var(--cream3)}
 .rr-card-main{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr 30px;gap:10px;align-items:start;padding:12px 14px}
 .rr-field label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--text3);margin-bottom:5px;display:block}
 .rr-del-btn{background:none;border:none;color:var(--text4);cursor:pointer;display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:6px;transition:all .15s;align-self:end;margin-bottom:2px;flex-shrink:0}
 .rr-del-btn:hover{background:var(--red2);color:var(--red)}
-.rr-alt-section{padding:10px 14px 12px;border-top:1px dashed var(--cream3);background:var(--cream)}
+.rr-alt-section{padding:12px 18px 14px;border-top:1px dashed var(--cream3);background:var(--cream)}
 .rr-alt-header{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px}
 .rate-row-alt{grid-column:1/-1;margin-top:6px;padding-top:8px;border-top:1px dashed var(--cream3)}
 .rate-row-alt-inner{display:grid;grid-template-columns:1.4fr .8fr 1fr auto;gap:7px;align-items:end}
@@ -619,8 +619,8 @@ html::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
 #rate-empty{border:1.5px dashed var(--cream2);border-radius:var(--r-sm);margin-top:8px}
 
 /* Rotation on/off toggle + panel */
-.rot-detail{margin-top:6px;padding:10px 12px;background:var(--white);border-radius:var(--r-sm);border:1.5px solid var(--cream2);grid-column:1/-1;display:none}
-.rot-detail.open{display:block}
+.rot-detail{margin-top:6px;padding:10px 12px 16px;background:var(--white);border-radius:var(--r-sm);border:1.5px solid var(--cream2);grid-column:1/-1;display:none;overflow:visible}
+.rot-detail.open{display:block;min-height:160px}
 .rot-detail-label{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px}
 /* Rotation type pills inside panel */
 .rot-type-bar{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px}
@@ -927,7 +927,7 @@ html::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
 <!-- ═══ CARD MODAL ═══ -->
 <div class="modal-overlay" id="card-modal">
 <div class="modal">
-  <div class="modal-header"><div class="modal-title" id="cm-title">Add New Card</div><button class="modal-close" onclick="closeModal('card-modal')">✕</button></div>
+  <div class="modal-header"><div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0"><div class="modal-title" id="cm-title">Add New Card</div><span id="cm-prefill-badge" style="display:none;background:#e8f4ee;color:#0f5c3a;font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px;border:1px solid #8ed4b0;white-space:nowrap;flex-shrink:0">✦ Auto-filled</span></div><button class="modal-close" onclick="closeModal('card-modal')">✕</button></div>
   <div class="modal-body">
     <!-- Step progress (add mode only) -->
     <div id="wiz-tabs" style="display:flex;gap:0;margin-bottom:20px;border-radius:8px;overflow:hidden;border:1px solid var(--cream2)">
@@ -1606,6 +1606,7 @@ function openAddCard(){
   setEditMode(false);
   document.getElementById('cm-title').textContent='Add New Card';
   populateEditor();_cardDirty=false;openModal('card-modal');
+  const pfb=document.getElementById('cm-prefill-badge');if(pfb)pfb.style.display='none';
 }
 function openEditCard(id){
   const c=S.cards.find(c=>c.id===id);if(!c)return;
@@ -1617,6 +1618,7 @@ function openEditCard(id){
   document.getElementById('cm-title').textContent='Edit Card';
   setEditMode(true);
   populateEditor();_cardDirty=false;openModal('card-modal');
+  const pfb2=document.getElementById('cm-prefill-badge');if(pfb2)pfb2.style.display='none';
 }
 function setEditMode(isEdit){
   const tabs=document.getElementById('wiz-tabs');
@@ -1636,11 +1638,11 @@ function setEditMode(isEdit){
       el.classList.add('active');
       // Add section divider if not already there
       if(!el.querySelector('.edit-section-label')){
-        const labels=['Basics','Rewards','Perks'];
+        const labels=[['🪪','Basics'],['⭐','Rewards'],['🎁','Perks']];
         const divider=document.createElement('div');
         divider.className='edit-section-label';
-        divider.style.cssText='font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--text4);padding:18px 0 10px;border-top:'+(i>0?'1px solid var(--cream2)':'none')+';margin-bottom:4px';
-        divider.textContent=labels[i];
+        divider.style.cssText='font-family:\'Playfair Display\',serif;font-size:17px;font-weight:700;color:var(--navy);padding:'+(i>0?'24px 0 12px':'4px 0 12px')+';border-top:'+(i>0?'2px solid var(--cream2)':'none')+';margin-bottom:8px;letter-spacing:-.01em;display:flex;align-items:center;gap:10px';
+        divider.innerHTML='<span style=\u0022font-size:18px;line-height:1\u0022>'+labels[i][0]+'<\/span><span>'+labels[i][1]+'<\/span>';
         el.insertBefore(divider,el.firstChild);
       }
     });
@@ -1751,6 +1753,7 @@ function selectCardName(name,bank){
     toggleTimeWindow(d.bonusReq);
   }
   toast('Card details auto-filled — review and adjust as needed.','info',3500);
+  const pfBadge=document.getElementById('cm-prefill-badge');if(pfBadge)pfBadge.style.display='inline-flex';
   // Auto-apply charge card if flagged
   if(d.isCharge){
     pendCard.type='charge';
@@ -2075,7 +2078,7 @@ function mkRateRow(r,i){
         <label>Earn Rate</label>
         <div style="display:flex;align-items:center;gap:6px">
           <input type="number" value="${r.rate||1}" step="0.1" min="0" placeholder="1.5" onchange="upR(${i},'rate',this.value)" style="width:64px;text-align:center;font-weight:700;font-size:15px;padding:6px 8px">
-          <div class="tg" style="flex-shrink:0"><button type="button" class="tg-opt${!isP?' active':''}" onclick="upR(${i},'rateType','cash');renderRateRows()">%</button><button type="button" class="tg-opt${isP?' active':''}" onclick="upR(${i},'rateType','points');renderRateRows()">pts</button></div>
+          <div class="tg" style="flex-shrink:0"><button type="button" class="tg-opt${!isP?' active':''}" onclick="upR(${i},'rateType','cash');renderRateRows()">%</button><button type="button" class="tg-opt${isP?' active':''}" onclick="upR(${i},'rateType','points');renderRateRows()">×</button></div>
         </div>
       </div>
       <div class="rr-field rr-field-cap">
@@ -2099,7 +2102,7 @@ function mkRateRow(r,i){
           <label>Alt Rate</label>
           <div style="display:flex;align-items:center;gap:6px">
             <input type="number" value="${r.altRate||''}" step="0.1" min="0" placeholder="4" onchange="upR(${i},'altRate',this.value)" style="width:60px;text-align:center">
-            <div class="tg" style="flex-shrink:0"><button type="button" class="tg-opt${!isAltP?' active':''}" onclick="upR(${i},'altRateType','cash');renderRateRows()">%</button><button type="button" class="tg-opt${isAltP?' active':''}" onclick="upR(${i},'altRateType','points');renderRateRows()">pts</button></div>
+            <div class="tg" style="flex-shrink:0"><button type="button" class="tg-opt${!isAltP?' active':''}" onclick="upR(${i},'altRateType','cash');renderRateRows()">%</button><button type="button" class="tg-opt${isAltP?' active':''}" onclick="upR(${i},'altRateType','points');renderRateRows()">×</button></div>
           </div>
         </div>
         <button type="button" class="rm-btn" onclick="upR(${i},'altRate','');upR(${i},'altNote','');upR(${i},'altCategory','');toggleAltSection(${i},false)" title="Remove alternate">×</button>
