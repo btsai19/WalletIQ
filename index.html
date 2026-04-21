@@ -320,11 +320,11 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15)}
 .rr-field label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--text3);margin-bottom:5px;display:block}
 .rr-del-btn{background:none;border:none;color:var(--text4);cursor:pointer;display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:6px;transition:all .15s;align-self:end;margin-bottom:2px;flex-shrink:0}
 .rr-del-btn:hover{background:var(--red2);color:var(--red)}
-.rr-alt-section{padding:12px 18px 14px;border-top:1px dashed var(--cream3);background:var(--cream)}
+.rr-alt-section{padding:14px 22px 16px;border-top:1px dashed var(--cream3);background:var(--cream)}
 .rr-alt-header{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px}
 .rate-row-alt{grid-column:1/-1;margin-top:6px;padding-top:8px;border-top:1px dashed var(--cream3)}
 .rate-row-alt-inner{display:grid;grid-template-columns:1.4fr .8fr 1fr auto;gap:7px;align-items:end}
-.alt-earn-toggle{grid-column:1/-1;margin-top:4px;display:flex;align-items:center;gap:6px;cursor:pointer;font-size:11px;font-weight:600;color:var(--text3);border:none;background:none;font-family:'Syne',sans-serif;padding:2px 0;transition:color .15s}
+.alt-earn-toggle{grid-column:1/-1;margin-top:4px;display:flex;align-items:center;gap:6px;cursor:pointer;font-size:11px;font-weight:600;color:var(--text3);border:none;background:none;font-family:'Syne',sans-serif;padding:6px 22px 4px;transition:color .15s}
 .alt-earn-toggle:hover{color:var(--navy)}
 .alt-earn-toggle svg{flex-shrink:0;transition:transform .2s}
 .alt-earn-toggle.open svg{transform:rotate(45deg)}
@@ -2078,7 +2078,7 @@ function mkRateRow(r,i){
         <label>Earn Rate</label>
         <div style="display:flex;align-items:center;gap:6px">
           <input type="number" value="${r.rate||1}" step="0.1" min="0" placeholder="1.5" onchange="upR(${i},'rate',this.value)" style="width:64px;text-align:center;font-weight:700;font-size:15px;padding:6px 8px">
-          <div class="tg" style="flex-shrink:0"><button type="button" class="tg-opt${!isP?' active':''}" onclick="upR(${i},'rateType','cash');renderRateRows()">%</button><button type="button" class="tg-opt${isP?' active':''}" onclick="upR(${i},'rateType','points');renderRateRows()">×</button></div>
+          <div class="tg" style="flex-shrink:0"><button type="button" class="tg-opt${!isP?' active':''}" onclick="upR(${i},'rateType','cash');renderRateRows()">%</button><button type="button" class="tg-opt${isP?' active':''}" onclick="upR(${i},'rateType','points');renderRateRows()">pts&nbsp;(×)</button></div>
         </div>
       </div>
       <div class="rr-field rr-field-cap">
@@ -2102,7 +2102,7 @@ function mkRateRow(r,i){
           <label>Alt Rate</label>
           <div style="display:flex;align-items:center;gap:6px">
             <input type="number" value="${r.altRate||''}" step="0.1" min="0" placeholder="4" onchange="upR(${i},'altRate',this.value)" style="width:60px;text-align:center">
-            <div class="tg" style="flex-shrink:0"><button type="button" class="tg-opt${!isAltP?' active':''}" onclick="upR(${i},'altRateType','cash');renderRateRows()">%</button><button type="button" class="tg-opt${isAltP?' active':''}" onclick="upR(${i},'altRateType','points');renderRateRows()">×</button></div>
+            <div class="tg" style="flex-shrink:0"><button type="button" class="tg-opt${!isAltP?' active':''}" onclick="upR(${i},'altRateType','cash');renderRateRows()">%</button><button type="button" class="tg-opt${isAltP?' active':''}" onclick="upR(${i},'altRateType','points');renderRateRows()">pts&nbsp;(×)</button></div>
           </div>
         </div>
         <button type="button" class="rm-btn" onclick="upR(${i},'altRate','');upR(${i},'altNote','');upR(${i},'altCategory','');toggleAltSection(${i},false)" title="Remove alternate">×</button>
@@ -2541,7 +2541,21 @@ function renderCardSortBtns(){
     b.className='svt-btn'+(cardSort===s.k?' active':'');
     b.style.cssText='padding:4px 10px;font-size:11px';
     b.textContent=s.l;
-    b.onclick=()=>{cardSort=s.k;renderCardSortBtns();renderCards();};
+    b.onclick=()=>{
+      cardSort=s.k;
+      renderCardSortBtns();
+      const g=document.getElementById('cards-grid');
+      if(g){
+        g.style.transition='opacity .18s ease,transform .18s ease';
+        g.style.opacity='0';g.style.transform='translateY(6px)';
+        setTimeout(()=>{
+          renderCards();
+          g.style.transition='opacity .22s ease,transform .22s ease';
+          g.style.opacity='1';g.style.transform='translateY(0)';
+          setTimeout(()=>{g.style.transition='';},250);
+        },180);
+      } else { renderCards(); }
+    };
     wrap.appendChild(b);
   });
 }
