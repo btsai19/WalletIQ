@@ -1064,6 +1064,7 @@ html::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
       <div style="background:var(--cream);border:1px solid var(--cream2);border-radius:var(--r-sm);padding:14px;margin-bottom:16px">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
           <div style="font-size:13px;font-weight:700;color:var(--navy);flex:1">💳 How does this card earn rewards?</div>
+          <button type="button" id="no-rewards-btn" onclick="setNoRewards(true)" style="white-space:nowrap;padding:5px 11px;border-radius:var(--r-sm);border:1.5px dashed var(--cream3);background:transparent;color:var(--text4);font-size:11px;font-weight:600;font-family:'Syne',sans-serif;cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor='var(--red)';this.style.color='var(--red)'" onmouseout="this.style.borderColor='var(--cream3)';this.style.color='var(--text4)'">✕ No Rewards</button>
           <button type="button" onclick="openCatManager()" style="font-size:11px;font-weight:600;font-family:'Syne',sans-serif;padding:4px 10px;border-radius:6px;border:1.5px solid var(--cream2);background:var(--white);color:var(--text3);cursor:pointer;white-space:nowrap;transition:all .15s" onmouseover="this.style.borderColor='var(--navy)';this.style.color='var(--navy)'" onmouseout="this.style.borderColor='var(--cream2)';this.style.color='var(--text3)'">⚙ Categories</button>
         </div>
         <div style="font-size:12.5px;color:var(--text3);line-height:1.6">Add one row per earning rate. Use "All Purchases" for flat-rate earnings, or a specific category like Dining for bonus rates. Cards like Discover it or Bilt can have both.</div>
@@ -1076,13 +1077,15 @@ html::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
       <div id="rate-empty" style="text-align:center;padding:20px;color:var(--text4);font-size:13px;display:none">No reward rates added yet. Click below to get started.</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         <button class="add-row" id="add-rate-row-btn" onclick="addRateRow()" style="flex:1;min-width:160px">＋ Add Rate Row</button>
-        <button type="button" id="no-rewards-btn" onclick="setNoRewards(true)" style="flex:0;white-space:nowrap;padding:10px 16px;border-radius:var(--r-sm);border:1.5px dashed var(--cream3);background:transparent;color:var(--text4);font-size:12px;font-weight:600;font-family:'Syne',sans-serif;cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor='var(--red)';this.style.color='var(--red)'" onmouseout="this.style.borderColor='var(--cream3)';this.style.color='var(--text4)'">✕ No Rewards</button>
       </div>
     </div>
     <!-- Step 2: Perks -->
     <div class="wiz-step" id="ws2">
       <div style="background:var(--cream);border:1px solid var(--cream2);border-radius:var(--r-sm);padding:14px;margin-bottom:16px">
-        <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:4px">🎁 Annual credits &amp; perks</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+          <div style="font-size:13px;font-weight:700;color:var(--navy);flex:1">🎁 Annual credits &amp; perks</div>
+          <button type="button" id="no-perks-btn" onclick="setNoPerks(true)" style="white-space:nowrap;padding:5px 11px;border-radius:var(--r-sm);border:1.5px dashed var(--cream3);background:transparent;color:var(--text4);font-size:11px;font-weight:600;font-family:'Syne',sans-serif;cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor='var(--red)';this.style.color='var(--red)'" onmouseout="this.style.borderColor='var(--cream3)';this.style.color='var(--text4)'">✕ No Perks</button>
+        </div>
         <div style="font-size:12.5px;color:var(--text3);line-height:1.6">Add recurring benefits that offset the annual fee — like a $120 dining credit, $300 travel credit, or lounge access. WalletIQ uses these to calculate your card's true net value.</div>
       </div>
       <div id="no-perks-banner" style="display:none;background:var(--blue2);border:1px solid var(--cream2);border-radius:var(--r-sm);padding:12px 14px;margin-bottom:12px;font-size:13px;color:var(--text2)">
@@ -1092,7 +1095,6 @@ html::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opa
       <div id="credit-rows"></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         <button class="add-row" id="add-perk-btn" onclick="addCreditRow()" style="flex:1;min-width:160px">＋ Add a Perk or Credit</button>
-        <button type="button" id="no-perks-btn" onclick="setNoPerks(true)" style="flex:0;white-space:nowrap;padding:10px 16px;border-radius:var(--r-sm);border:1.5px dashed var(--cream3);background:transparent;color:var(--text4);font-size:12px;font-weight:600;font-family:'Syne',sans-serif;cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor='var(--red)';this.style.color='var(--red)'" onmouseout="this.style.borderColor='var(--cream3)';this.style.color='var(--text4)'">✕ No Perks</button>
       </div>
     </div>
   </div>
@@ -1343,21 +1345,45 @@ function buildCsel(containerId,opts,currentVal,onChange,dark=false){
   trigger.innerHTML=`<span class="csel-val">${chosen.l}</span><svg class="csel-arrow" width="12" height="8" viewBox="0 0 12 8" fill="none"><path d="M1 1l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`;
   const dropdown=document.createElement('div');
   dropdown.className='csel-dropdown';
-  opts.forEach(o=>{
-    const opt=document.createElement('div');
-    opt.className='csel-opt'+(o.v===currentVal?' selected':'');
-    opt.innerHTML=`<span class="csel-check"></span>${o.l}`;
-    opt.onclick=()=>{
-      onChange(o.v);
-      wrap.querySelectorAll('.csel-opt').forEach(x=>x.classList.remove('selected'));
-      opt.classList.add('selected');
-      trigger.querySelector('.csel-val').textContent=o.l;
-      dropdown.classList.remove('open');
-      trigger.classList.remove('open');
-      openCsel=null;
+  // Search input (only show for lists with 6+ options)
+  let searchInp=null;
+  if(opts.length>=6){
+    const searchWrap=document.createElement('div');
+    searchWrap.style.cssText='padding:6px 8px;border-bottom:1px solid var(--cream2);position:sticky;top:0;background:var(--white);z-index:1';
+    searchInp=document.createElement('input');
+    searchInp.type='text';
+    searchInp.placeholder='Type to filter…';
+    searchInp.style.cssText='width:100%;border:1.5px solid var(--cream2);border-radius:6px;padding:5px 9px;font-size:12px;font-family:\'Syne\',sans-serif;outline:none;box-sizing:border-box';
+    searchInp.onclick=e=>e.stopPropagation();
+    searchInp.oninput=()=>{
+      const q=searchInp.value.toLowerCase();
+      dropdown.querySelectorAll('.csel-opt').forEach(opt=>{
+        opt.style.display=opt.textContent.toLowerCase().includes(q)?'':'none';
+      });
     };
-    dropdown.appendChild(opt);
-  });
+    searchWrap.appendChild(searchInp);
+    dropdown.appendChild(searchWrap);
+  }
+  const renderOpts=(filterOpts)=>{
+    filterOpts.forEach(o=>{
+      const opt=document.createElement('div');
+      opt.className='csel-opt'+(o.v===currentVal?' selected':'');
+      opt.innerHTML=`<span class="csel-check"></span>${o.l}`;
+      opt.onclick=()=>{
+        onChange(o.v);
+        currentVal=o.v;
+        wrap.querySelectorAll('.csel-opt').forEach(x=>x.classList.remove('selected'));
+        opt.classList.add('selected');
+        trigger.querySelector('.csel-val').textContent=o.l;
+        dropdown.classList.remove('open');
+        trigger.classList.remove('open');
+        if(searchInp){searchInp.value='';dropdown.querySelectorAll('.csel-opt').forEach(x=>x.style.display='');}
+        openCsel=null;
+      };
+      dropdown.appendChild(opt);
+    });
+  };
+  renderOpts(opts);
   trigger.onclick=(e)=>{
     e.stopPropagation();
     const isOpen=dropdown.classList.contains('open');
@@ -1365,15 +1391,12 @@ function buildCsel(containerId,opts,currentVal,onChange,dark=false){
     dropdown.classList.toggle('open',!isOpen);
     trigger.classList.toggle('open',!isOpen);
     if(!isOpen){
-      // Decide if we need to open upward
       const rect=trigger.getBoundingClientRect();
       const spaceBelow=window.innerHeight-rect.bottom;
       const dropH=Math.min(dropdown.scrollHeight,240);
-      if(spaceBelow<dropH+20){
-        dropdown.classList.add('dropup');
-      } else {
-        dropdown.classList.remove('dropup');
-      }
+      if(spaceBelow<dropH+20){dropdown.classList.add('dropup');}
+      else{dropdown.classList.remove('dropup');}
+      if(searchInp)setTimeout(()=>searchInp.focus(),50);
     }
     openCsel=isOpen?null:dropdown;
   };
@@ -1976,23 +1999,23 @@ function showFieldError(inputId,errId){
 // Rate rows
 function renderRateRows(){
   const c=document.getElementById('rate-rows');c.innerHTML='';
-  // Clear stale rr-csel callbacks to prevent memory leak
   window._rrCselCbs={};
   (pendCard.rates||[]).forEach((r,i)=>c.appendChild(mkRateRow(r,i)));
   updateRateEmpty();
+  updateNoRewardsBtn();
 }
 function mkRrCsel(opts,curVal,onChange,extraClass=''){
   const id='rrcs_'+Math.random().toString(36).slice(2,7);
   const chosen=opts.find(o=>o.v===curVal)||opts[0];
   const arrowSvg=`<svg class="rr-csel-arrow" width="10" height="7" viewBox="0 0 10 7" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`;
+  const searchHtml=opts.length>=6?`<div style="padding:5px 7px;border-bottom:1px solid var(--cream2);position:sticky;top:0;background:var(--white);z-index:1"><input type="text" class="rr-csel-search" placeholder="Filter…" onclick="event.stopPropagation()" style="width:100%;border:1.5px solid var(--cream2);border-radius:5px;padding:4px 8px;font-size:12px;font-family:'Syne',sans-serif;outline:none;box-sizing:border-box" oninput="this.closest('.rr-csel-dropdown').querySelectorAll('.rr-csel-opt').forEach(o=>o.style.display=o.textContent.toLowerCase().includes(this.value.toLowerCase())?'':'none')"></div>`:'';
   const optsHtml=opts.map(o=>`<div class="rr-csel-opt${o.v===curVal?' sel':''}" data-v="${o.v.replace(/"/g,'&quot;')}">${o.l}</div>`).join('');
   const html=`<div class="rr-csel" id="${id}">
     <button type="button" class="rr-csel-trigger ${extraClass}" onclick="toggleRrCsel('${id}',event)">
       <span class="rr-csel-val">${chosen.l}</span>${arrowSvg}
     </button>
-    <div class="rr-csel-dropdown">${optsHtml}</div>
+    <div class="rr-csel-dropdown">${searchHtml}${optsHtml}</div>
   </div>`;
-  // Store callback for later binding
   window._rrCselCbs=window._rrCselCbs||{};
   window._rrCselCbs[id]=onChange;
   return html;
@@ -2014,6 +2037,8 @@ function toggleRrCsel(id,e){
     dd.classList.add('open');
     if(spaceBelow<210)dd.classList.add('dropup');
     trigger.classList.add('open');
+    const si=dd.querySelector('.rr-csel-search');
+    if(si)setTimeout(()=>{si.value='';dd.querySelectorAll('.rr-csel-opt').forEach(o=>o.style.display='');si.focus();},40);
     // bind click on opts
     dd.querySelectorAll('.rr-csel-opt').forEach(opt=>{
       opt.onclick=(ev)=>{
@@ -2159,6 +2184,7 @@ function upR(i,k,v){if(!pendCard.rates[i])return;pendCard.rates[i][k]=k==='rate'
 function renderCreditRows(){
   const c=document.getElementById('credit-rows');c.innerHTML='';
   (pendCard.credits||[]).forEach((cr,i)=>c.appendChild(mkCreditRow(cr,i)));
+  updateNoPerksBtn();
 }
 const COMMON_PERKS=['Airline Fee Credit','Airport Lounge Access','Clear Plus Credit','Dining Credit','Entertainment Credit','Global Entry Credit','Hotel Credit','Lyft Credit','Monthly Dining Credit','Peloton Credit','Saks Credit','Streaming Credit','TSA PreCheck Credit','Travel Credit','Uber Cash Credit','Walmart+ Credit','Wireless Credit'];
 function mkCreditRow(cr,i){
@@ -2204,12 +2230,25 @@ function setNoRewards(on,silent=false){
   const rowsEl=document.getElementById('rate-rows');
   if(banner){banner.style.display=on?'flex':'none';}
   if(addBtn){addBtn.style.display=on?'none':'inline-flex';}
-  if(noBtn){noBtn.style.display=on?'none':'inline-flex';}
+  // Hide "No Rewards" button when rows exist or when active
+  const hasRows=rowsEl&&rowsEl.children.length>0;
+  if(noBtn){noBtn.style.display=(on||hasRows)?'none':'inline-flex';}
   if(on&&rowsEl){rowsEl.style.opacity='0.4';rowsEl.style.pointerEvents='none';}
   else if(rowsEl){rowsEl.style.opacity='';rowsEl.style.pointerEvents='';}
 }
+function updateNoRewardsBtn(){
+  const noBtn=document.getElementById('no-rewards-btn');
+  const rowsEl=document.getElementById('rate-rows');
+  const isActive=pendCard&&pendCard.noRewards;
+  if(noBtn){noBtn.style.display=(isActive||(rowsEl&&rowsEl.children.length>0))?'none':'inline-flex';}
+}
+function updateNoPerksBtn(){
+  const noBtn=document.getElementById('no-perks-btn');
+  const rowsEl=document.getElementById('credit-rows');
+  const isActive=pendCard&&pendCard.noPerks;
+  if(noBtn){noBtn.style.display=(isActive||(rowsEl&&rowsEl.children.length>0))?'none':'inline-flex';}
+}
 
-// ── No Perks toggle ──
 function setNoPerks(on,silent=false){
   if(!silent)pendCard.noPerks=on;
   const banner=document.getElementById('no-perks-banner');
@@ -2218,7 +2257,8 @@ function setNoPerks(on,silent=false){
   const rowsEl=document.getElementById('credit-rows');
   if(banner){banner.style.display=on?'flex':'none';}
   if(addBtn){addBtn.style.display=on?'none':'inline-flex';}
-  if(noBtn){noBtn.style.display=on?'none':'inline-flex';}
+  const hasRows=rowsEl&&rowsEl.children.length>0;
+  if(noBtn){noBtn.style.display=(on||hasRows)?'none':'inline-flex';}
   if(on&&rowsEl){rowsEl.style.opacity='0.35';rowsEl.style.pointerEvents='none';}
   else if(rowsEl){rowsEl.style.opacity='';rowsEl.style.pointerEvents='';}
 }
@@ -2408,7 +2448,7 @@ function deleteCard(id){
 }
 
 // In-app confirm (replaces window.confirm)
-function openConfirm(msg,onYes){
+function openConfirm(msg,onYes,yesLabel='Confirm'){
   const overlay=document.createElement('div');
   overlay.style.cssText='position:fixed;inset:0;background:rgba(13,27,42,.5);backdrop-filter:blur(3px);z-index:9000;display:flex;align-items:center;justify-content:center';
   overlay.innerHTML=`<div style="background:var(--white);border-radius:var(--r-lg);padding:28px 32px;max-width:360px;width:90%;box-shadow:var(--sh-lg);text-align:center">
@@ -2417,7 +2457,7 @@ function openConfirm(msg,onYes){
     <div style="font-size:13px;color:var(--text3);margin-bottom:24px">${msg}</div>
     <div style="display:flex;gap:10px;justify-content:center">
       <button onclick="this.closest('[style*=fixed]').remove()" style="padding:9px 20px;border-radius:var(--r-sm);border:1px solid var(--cream2);background:var(--cream);font-family:'Syne',sans-serif;font-size:13px;font-weight:600;cursor:pointer;color:var(--text2)">Cancel</button>
-      <button id="conf-yes" style="padding:9px 20px;border-radius:var(--r-sm);border:none;background:var(--red);color:#fff;font-family:'Syne',sans-serif;font-size:13px;font-weight:600;cursor:pointer">Delete</button>
+      <button id="conf-yes" style="padding:9px 20px;border-radius:var(--r-sm);border:none;background:var(--red);color:#fff;font-family:'Syne',sans-serif;font-size:13px;font-weight:600;cursor:pointer">${yesLabel}</button>
     </div>
   </div>`;
   document.body.appendChild(overlay);
@@ -2660,10 +2700,10 @@ function renderSliders(){
     }).join('')}</div>`;
   } else {
     // Grid (default)
-    cont.innerHTML=`<div class="spend-grid-2">${SPEND_CATS.map(cat=>{
+    const cardsHtml=SPEND_CATS.map((cat,idx)=>{
       const val=S.spending[cat]||0;
       const best=getBest(cat,val);
-      return `<div class="sg-card">
+      return `<div class="sg-card" draggable="true" data-cat="${cat}" data-idx="${idx}" style="cursor:grab">
         <div class="sg-header">
           <span class="sg-emoji">${EMO[cat]||'💰'}</span>
           <span class="sg-cat">${cat}</span>
@@ -2671,8 +2711,119 @@ function renderSliders(){
         <div class="sg-input-wrap"><span>$</span><input type="number" value="${val}" min="0" oninput="updSpend('${cat}',this.value)"></div>
         <div class="sg-best" id="sb-${safeId(cat)}">${best&&val>0?'🏆 '+best.card:''}</div>
       </div>`;
-    }).join('')}</div>`;
+    }).join('');
+    const addCardHtml=`<div class="sg-card sg-add-card" onclick="focusInlineSpendAdd()" style="border:1.5px dashed var(--cream3);background:transparent;box-shadow:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;min-height:80px;transition:border-color .15s,background .15s" onmouseover="this.style.borderColor='var(--navy)';this.style.background='var(--cream)'" onmouseout="this.style.borderColor='var(--cream3)';this.style.background='transparent'">
+      <div id="sg-add-collapsed" style="display:flex;flex-direction:column;align-items:center;gap:4px">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="8" stroke="var(--text4)" stroke-width="1.5"/><path d="M9 5v8M5 9h8" stroke="var(--text4)" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <span style="font-size:11px;font-weight:600;color:var(--text4);font-family:'Syne',sans-serif">Add Category</span>
+      </div>
+      <div id="sg-add-expanded" style="display:none;width:100%;padding:4px 0">
+        <input id="sg-add-input" type="text" placeholder="e.g. Clothing" style="width:100%;border:1.5px solid var(--cream2);border-radius:6px;padding:6px 9px;font-size:12px;font-family:'Syne',sans-serif;outline:none;box-sizing:border-box;margin-bottom:6px" onclick="event.stopPropagation()" onkeydown="if(event.key==='Enter'){event.stopPropagation();inlineAddSpendCat();}if(event.key==='Escape'){closeInlineSpendAdd();}">
+        <div style="display:flex;gap:5px">
+          <button onclick="event.stopPropagation();inlineAddSpendCat()" style="flex:1;padding:5px 0;background:var(--navy);color:#fff;border:none;border-radius:5px;font-size:11px;font-weight:700;font-family:'Syne',sans-serif;cursor:pointer">Add</button>
+          <button onclick="event.stopPropagation();closeInlineSpendAdd()" style="padding:5px 8px;background:var(--cream2);color:var(--text3);border:none;border-radius:5px;font-size:11px;font-weight:700;font-family:'Syne',sans-serif;cursor:pointer">✕</button>
+        </div>
+      </div>
+    </div>`;
+    cont.innerHTML=`<div class="spend-grid-2" id="sg-drag-grid">${cardsHtml}${addCardHtml}</div>`;
+    initSpendGridDrag();
   }
+}
+function focusInlineSpendAdd(){
+  const col=document.getElementById('sg-add-collapsed');
+  const exp=document.getElementById('sg-add-expanded');
+  const inp=document.getElementById('sg-add-input');
+  if(col)col.style.display='none';
+  if(exp)exp.style.display='block';
+  if(inp)setTimeout(()=>inp.focus(),40);
+}
+function closeInlineSpendAdd(){
+  const col=document.getElementById('sg-add-collapsed');
+  const exp=document.getElementById('sg-add-expanded');
+  const inp=document.getElementById('sg-add-input');
+  if(col)col.style.display='flex';
+  if(exp)exp.style.display='none';
+  if(inp)inp.value='';
+}
+function inlineAddSpendCat(){
+  const inp=document.getElementById('sg-add-input');
+  if(!inp)return;
+  const val=inp.value.trim();
+  if(!val||CATS.includes(val)){if(inp)inp.focus();return;}
+  // Auto-assign emoji
+  const EMOJI_KEYWORDS=[
+    ['🍔',['dining','restaurant','food','eat','burger','pizza','cafe','coffee','bar']],
+    ['🛒',['grocery','groceries','supermarket','market']],
+    ['✈️',['travel','flight','airline','trip','vacation','hotel']],
+    ['⛽',['gas','fuel','petrol','station']],
+    ['🏠',['rent','mortgage','housing','apartment','home']],
+    ['🛍️',['shopping','shop','retail','mall','clothes','clothing','apparel','fashion','amazon','online']],
+    ['💊',['pharmacy','drug','medicine','cvs','walgreens','prescription']],
+    ['📺',['streaming','netflix','hulu','spotify','disney','subscription']],
+    ['🚌',['transit','bus','train','subway','metro','lyft','uber','rideshare']],
+    ['💄',['beauty','salon','spa','cosmetics','makeup','skincare','haircut']],
+    ['📱',['phone','mobile','wireless','cell','carrier']],
+    ['🐾',['pet','dog','cat','vet','animal']],
+    ['🎮',['gaming','game','xbox','playstation','steam','nintendo']],
+    ['🏋️',['gym','fitness','workout','exercise','sport','yoga']],
+    ['🎓',['education','school','tuition','college','course','book']],
+    ['💡',['utilities','electric','water','internet','cable','bill','power']],
+    ['🎭',['entertainment','movie','theater','concert','event','ticket']],
+    ['🏥',['medical','doctor','hospital','clinic','dentist','healthcare']],
+    ['🚗',['car','auto','vehicle','parking','toll','repair','mechanic']],
+  ];
+  const lower=val.toLowerCase();
+  let emoji='🏷️';
+  for(const [emo,keywords] of EMOJI_KEYWORDS){
+    if(keywords.some(k=>lower.includes(k)||k.includes(lower))){emoji=emo;break;}
+  }
+  BASE_EMO[val]=emoji;
+  const apIdx=CATS.indexOf('All Purchases');
+  if(apIdx>=0)CATS.splice(apIdx,0,val);else CATS.push(val);
+  SPEND_CATS=SPEND_CATS_fn();
+  if(S.spending[val]===undefined)S.spending[val]=0;
+  saveCustomCats(CATS);
+  renderSliders();
+  toast('Category "'+val+'" added!','success',2500);
+}
+let _sgDragIdx=null;
+function initSpendGridDrag(){
+  const grid=document.getElementById('sg-drag-grid');
+  if(!grid)return;
+  const cards=[...grid.querySelectorAll('.sg-card:not(.sg-add-card)')];
+  cards.forEach(card=>{
+    card.addEventListener('dragstart',e=>{
+      _sgDragIdx=parseInt(card.dataset.idx);
+      card.style.opacity='0.45';
+      e.dataTransfer.effectAllowed='move';
+    });
+    card.addEventListener('dragend',()=>{card.style.opacity='';cards.forEach(c=>c.style.outline='');});
+    card.addEventListener('dragover',e=>{
+      e.preventDefault();
+      cards.forEach(c=>c.style.outline='');
+      card.style.outline='2px solid var(--gold)';
+    });
+    card.addEventListener('dragleave',()=>card.style.outline='');
+    card.addEventListener('drop',e=>{
+      e.preventDefault();
+      card.style.outline='';
+      const toIdx=parseInt(card.dataset.idx);
+      if(_sgDragIdx===null||_sgDragIdx===toIdx)return;
+      // Reorder CATS array
+      const fromCat=SPEND_CATS[_sgDragIdx];
+      const toCat=SPEND_CATS[toIdx];
+      const fromCatsIdx=CATS.indexOf(fromCat);
+      const toCatsIdx=CATS.indexOf(toCat);
+      if(fromCatsIdx<0||toCatsIdx<0)return;
+      CATS.splice(fromCatsIdx,1);
+      const newTo=CATS.indexOf(toCat);
+      CATS.splice(newTo,0,fromCat);
+      SPEND_CATS=SPEND_CATS_fn();
+      saveCustomCats(CATS);
+      renderSliders();
+      _sgDragIdx=null;
+    });
+  });
 }
 function syncSlider(cat,v){
   updSpend(cat,v);
@@ -3194,6 +3345,39 @@ function addSpendCat(){
   if(!inp)return;
   const val=inp.value.trim();
   if(!val||CATS.includes(val)){inp.focus();return;}
+  // Auto-assign emoji based on keyword matching
+  const EMOJI_KEYWORDS=[
+    ['🍔',['dining','restaurant','food','eat','burger','pizza','cafe','coffee','bar','bistro','lunch','dinner','breakfast']],
+    ['🛒',['grocery','groceries','supermarket','market','produce','food store','whole foods']],
+    ['✈️',['travel','flight','airline','trip','vacation','hotel','airbnb','booking','accommodation']],
+    ['⛽',['gas','fuel','petrol','station','shell','bp','chevron']],
+    ['🏠',['rent','mortgage','housing','apartment','home','lease']],
+    ['🛍️',['shopping','shop','retail','mall','clothes','clothing','apparel','fashion','store','amazon','online']],
+    ['💊',['pharmacy','drug','medicine','cvs','walgreens','health store','prescription']],
+    ['📺',['streaming','netflix','hulu','spotify','disney','subscription','hbo','prime']],
+    ['🚌',['transit','bus','train','subway','metro','commute','lyft','uber','rideshare','transport']],
+    ['💄',['beauty','salon','spa','cosmetics','makeup','skincare','haircut','barber']],
+    ['📱',['phone','mobile','wireless','att','verizon','tmobile','cell','carrier']],
+    ['🐾',['pet','dog','cat','vet','veterinary','animal','pets','petco','petsmart']],
+    ['🎮',['gaming','game','xbox','playstation','steam','nintendo','esports']],
+    ['🏋️',['gym','fitness','workout','exercise','sport','yoga','peloton','crossfit']],
+    ['🎓',['education','school','tuition','college','university','course','book','textbook','study']],
+    ['💡',['utilities','electric','electricity','water','internet','cable','bill','power','utility']],
+    ['🎭',['entertainment','movie','theater','concert','event','show','ticket']],
+    ['👶',['childcare','daycare','baby','kids','children','pediatric']],
+    ['💰',['investment','savings','bank','finance','financial']],
+    ['🏥',['medical','doctor','hospital','clinic','dentist','insurance','healthcare']],
+    ['🚗',['car','auto','vehicle','parking','toll','repair','mechanic','oil change']],
+    ['🎁',['gift','presents','birthday','holiday','christmas']],
+    ['🍷',['alcohol','wine','beer','liquor','bar','brewery','winery']],
+    ['🌿',['garden','plants','nursery','outdoor','lawn','home improvement']],
+  ];
+  const lower=val.toLowerCase();
+  let emoji='🏷️';
+  for(const [emo,keywords] of EMOJI_KEYWORDS){
+    if(keywords.some(k=>lower.includes(k)||k.includes(lower))){emoji=emo;break;}
+  }
+  BASE_EMO[val]=emoji;
   const apIdx=CATS.indexOf('All Purchases');
   if(apIdx>=0)CATS.splice(apIdx,0,val);
   else CATS.push(val);
@@ -4144,7 +4328,7 @@ function animateCounter(el,target,prefix='$',suffix=''){
         <button class="btn btn-primary btn-sm" onclick="addCustomCat()">Add</button>
       </div>
     </div>
-    <button class="btn btn-secondary btn-sm" onclick="if(confirm('Reset to default categories?'))resetCatsToDefault()">Reset to Defaults</button>
+    <button class="btn btn-secondary btn-sm" onclick="openConfirm('Reset to default categories? Custom categories will be removed.',resetCatsToDefault,'Reset')">Reset to Defaults</button>
   </div>
   <div class="modal-footer"><button class="btn btn-primary" onclick="closeModal('cat-manager-modal');renderCatManagerList()">Done</button></div>
 </div>
@@ -4174,7 +4358,7 @@ function animateCounter(el,target,prefix='$',suffix=''){
         <button class="btn btn-primary btn-sm" onclick="addSpendCat()">Add</button>
       </div>
     </div>
-    <button class="btn btn-secondary btn-sm" onclick="if(confirm('Reset to default categories?'))resetSpendCats()">Reset to Defaults</button>
+    <button class="btn btn-secondary btn-sm" onclick="openConfirm('Reset to default categories? Custom categories will be removed.',resetSpendCats,'Reset')">Reset to Defaults</button>
   </div>
   <div class="modal-footer"><button class="btn btn-primary" onclick="closeModal('spend-cat-modal')">Done</button></div>
 </div>
